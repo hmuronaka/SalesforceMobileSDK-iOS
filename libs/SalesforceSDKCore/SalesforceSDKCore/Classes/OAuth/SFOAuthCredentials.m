@@ -268,6 +268,7 @@ NSException * SFOAuthInvalidIdentifierException() {
 }
 
 - (void)revoke {
+    [SFSDKAuthHelper append:@"revoke in SDK"];
     [self revokeAccessToken];
     [self revokeRefreshToken];
 }

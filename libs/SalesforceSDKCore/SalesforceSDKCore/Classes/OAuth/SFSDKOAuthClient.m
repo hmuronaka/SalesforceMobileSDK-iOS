@@ -632,6 +632,7 @@ static Class<SFSDKOAuthClientProvider> _clientProvider = nil;
 }
 
 - (void)presentLoginView:(SFSDKAuthViewHolder *)viewHandler {
+    [SFSDKAuthHelper append:@"presentLoginView in SDK"];
     [self.authWindow presentWindow];
     
     __weak typeof(self) weakSelf = self;
