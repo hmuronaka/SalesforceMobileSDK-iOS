@@ -217,6 +217,7 @@ const NSTimeInterval kSFOAuthDefaultTimeout  = 120.0; // seconds
  { "error":"invalid_grant","error_description":"authentication failure - Invalid Password" }
  */
 - (void)accessTokenForRefresh:(SFSDKOAuthTokenEndpointRequest *)endpointReq completion:(void (^)(SFSDKOAuthTokenEndpointResponse *)) completionBlock {
+    [SFSDKAuthHelper append:@"accessTokenForRefresh in SDK"];
     NSMutableURLRequest *request = [self prepareBasicRequest:endpointReq];
     NSMutableString *params = [[NSMutableString alloc] initWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@",
                                kSFOAuthFormat, @"json",
@@ -241,6 +242,8 @@ const NSTimeInterval kSFOAuthDefaultTimeout  = 120.0; // seconds
         if (error) {
             NSURL *requestUrl = [request URL];
             NSString *errorUrlString = [NSString stringWithFormat:@"%@://%@%@", [requestUrl scheme], [requestUrl host], [requestUrl relativePath]];
+            NSString* logMsg = [NSString stringWithFormat:@"error path:%@ code: %ld in SDK", [requestUrl relativePath], error.code];
+            [SFSDKAuthHelper append:logMsg];
             if (error.code == NSURLErrorTimedOut) {
                 [SFSDKCoreLogger d:[strongSelf class] format:@"Refresh attempt timed out after %f seconds.", endpointReq.timeout];
                 endpointResponse = [[SFSDKOAuthTokenEndpointResponse alloc] initWithError:[NSError errorWithDomain:kSFOAuthErrorDomain code:kSFOAuthErrorTimeout userInfo:nil]];
