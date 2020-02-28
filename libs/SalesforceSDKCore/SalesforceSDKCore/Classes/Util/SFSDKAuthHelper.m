@@ -33,9 +33,22 @@
 #import "SFDefaultUserManagementViewController.h"
 #import "SFSecurityLockout.h"
 
+static LogAppender _logAppender;
+
 @implementation SFSDKAuthHelper
 
++ (void)setLogAppender:(LogAppender)logAppender {
+    _logAppender = logAppender;
+}
+
++ (void)append:(NSString*)message {
+    if(_logAppender != nil) {
+        _logAppender(message);
+    }
+}
+
 + (void)loginIfRequired:(void (^)(void))completionBlock {
+    [SFSDKAuthHelper append:@"loginIfRequired in SDK"];
     if (![SFUserAccountManager sharedInstance].currentUser && [SalesforceSDKManager sharedManager].appConfig.shouldAuthenticate) {
         SFUserAccountManagerSuccessCallbackBlock successBlock = ^(SFOAuthInfo *authInfo,SFUserAccount *userAccount) {
             if (completionBlock) {
