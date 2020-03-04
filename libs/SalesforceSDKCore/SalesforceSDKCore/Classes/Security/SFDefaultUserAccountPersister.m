@@ -122,7 +122,7 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                         } else {
                             [SFSDKAuthHelper append:[NSString stringWithFormat:@"failed to load user. path: %@", userAccountPath]];
                             // Error logging will already have occurred.  Make sure account file data is removed.
-                            [fm removeItemAtPath:userAccountPath error:nil];
+                            // [fm removeItemAtPath:userAccountPath error:nil];
                         }
                     } else {
                         [SFSDKCoreLogger d:[self class] format:@"There is no user account file in this user directory: %@", orgPath];
@@ -259,10 +259,15 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                                          code:SFUserAccountManagerCannotRetrieveUserData
                                      userInfo:@{NSLocalizedDescriptionKey: reason}];
         }
+        [SFSDKAuthHelper append:@"failed loadUserAccountFromFile 1"];
         [SFSDKCoreLogger d:[self class] format:reason];
         return NO;
     }
-    SFEncryptionKey *encKey = [[SFKeyStoreManager sharedInstance] retrieveKeyWithLabel:kUserAccountEncryptionKeyLabel autoCreate:YES];
+    SFEncryptionKey *encKey = [[SFKeyStoreManager sharedInstance] retrieveKeyWithLabel:kUserAccountEncryptionKeyLabel autoCreate:NO];
+    if( !encKey ) {
+        [SFSDKAuthHelper append:@"failed loadUserAccountFromFile !encKey"];
+        return NO;
+    }
     NSData *decryptedArchiveData = [encKey decryptData:encryptedUserAccountData];
     if (!decryptedArchiveData) {
         if (error) {
@@ -270,6 +275,7 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                                          code:SFUserAccountManagerCannotRetrieveUserData
                                      userInfo:@{NSLocalizedDescriptionKey: reason}];
         }
+        [SFSDKAuthHelper append:@"failed loadUserAccountFromFile 2"];
         [SFSDKCoreLogger w:[self class] format:reason];
         return NO;
     }
@@ -291,6 +297,7 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                                          code:SFUserAccountManagerCannotReadDecryptedArchive
                                      userInfo:@{NSLocalizedDescriptionKey: reason}];
         }
+        [SFSDKAuthHelper append:@"failed loadUserAccountFromFile 3"];
         return NO;
     }
 }
