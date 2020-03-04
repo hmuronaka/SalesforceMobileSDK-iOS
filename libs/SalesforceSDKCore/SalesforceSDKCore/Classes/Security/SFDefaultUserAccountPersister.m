@@ -29,6 +29,7 @@
 #import "SFKeyStoreManager.h"
 #import "SFSDKCryptoUtils.h"
 #import <SalesforceSDKCommon/SFFileProtectionHelper.h>
+#import "SFSDKAuthHelper.h"
 
 
 // Name of the individual file containing the archived SFUserAccount class
@@ -116,8 +117,10 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                         SFUserAccount *userAccount = nil;
                         [self loadUserAccountFromFile:userAccountPath account:&userAccount error:nil];
                         if (userAccount) {
+                            [SFSDKAuthHelper append:[NSString stringWithFormat:@"loaded user.path: %@", userAccountPath]];
                             userAccountMap[userAccount.accountIdentity] = userAccount;
                         } else {
+                            [SFSDKAuthHelper append:[NSString stringWithFormat:@"failed to load user. path: %@", userAccountPath]];
                             // Error logging will already have occurred.  Make sure account file data is removed.
                             [fm removeItemAtPath:userAccountPath error:nil];
                         }
