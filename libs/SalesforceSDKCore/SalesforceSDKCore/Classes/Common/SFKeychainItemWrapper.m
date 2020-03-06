@@ -88,7 +88,7 @@ static CFTypeRef sKeychainAccessibleAttribute;
         sKeychainItemWrapperMap = [[NSMutableDictionary alloc] init];
         
         /// Initialize using the most restricted access
-        sKeychainAccessibleAttribute = kSecAttrAccessibleAfterFirstUnlock;
+        sKeychainAccessibleAttribute = kSecAttrAccessibleWhenUnlockedThisDeviceOnly;
     }
 }
 
