@@ -57,7 +57,6 @@
 #import "SFPasscodeManager.h"
 #import "SFNetwork.h"
 #import "SFSDKSalesforceAnalyticsManager.h"
-// #import "SFSDKAuthHelper.h"
 
 // Notifications
 NSNotificationName SFUserAccountManagerDidChangeUserNotification       = @"SFUserAccountManagerDidChangeUserNotification";
@@ -1866,7 +1865,6 @@ static NSString * const kSFGenericFailureAuthErrorHandler = @"GenericFailureErro
 }
 
 - (void)presentLoginView:(SFSDKAuthViewHolder *)viewHandler {
-//    [SFSDKAuthHelper append:@"presentLoginView"];
    
     [[SFSDKWindowManager sharedManager].authWindow presentWindow];
     void (^presentViewBlock)(void) = ^void() {

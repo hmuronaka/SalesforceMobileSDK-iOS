@@ -30,7 +30,6 @@
 #import "SFCrypto.h"
 #import "UIDevice+SFHardware.h"
 #import "NSString+SFAdditions.h"
-#import "SFSDKAuthHelper.h"
 #import  <SalesforceSDKCommon/NSUserDefaults+SFAdditions.h>
 
 NSString * const kSFOAuthEncryptionTypeKey = @"com.salesforce.oauth.creds.encryption.type";
@@ -78,7 +77,6 @@ NSString * const kSFOAuthEncryptionTypeKey = @"com.salesforce.oauth.creds.encryp
 - (NSData *)tokenForService:(NSString *)service
 {
     if (!([self.identifier length] > 0)) {
-        [SFSDKAuthHelper append:@"tokenForService"];
         @throw SFOAuthInvalidIdentifierException();
     }
     
@@ -152,10 +150,10 @@ NSString * const kSFOAuthEncryptionTypeKey = @"com.salesforce.oauth.creds.encryp
 - (BOOL)updateKeychainWithTokenData:(NSData *)tokenData forService:(NSString *)service
 {
     if (!([self.identifier length] > 0)) {
-        [SFSDKAuthHelper append:@"updateKeychainWithTokenData"];
         @throw SFOAuthInvalidIdentifierException();
     }
-
+    
+    
     SFKeychainItemWrapper *keychainItem = [SFKeychainItemWrapper itemWithIdentifier:service account:self.identifier];
     BOOL keychainOperationSuccessful;
     if (tokenData != nil) {

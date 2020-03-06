@@ -39,7 +39,6 @@ static NSString * const kSFOAuthDefaultDomain          = @"login.salesforce.com"
 static NSString * const kSFOAuthClusterImplementationKey = @"SFOAuthClusterImplementation";
 
 NSException * SFOAuthInvalidIdentifierException() {
-    [SFSDKAuthHelper append:@"SFOAuthInvalidIdentifierException"];
     return [[NSException alloc] initWithName:NSInternalInconsistencyException
                                       reason:@"identifier cannot be nil or empty"
                                     userInfo:nil];
@@ -220,8 +219,6 @@ NSException * SFOAuthInvalidIdentifierException() {
 }
 
 - (void)setIdentifier:(NSString *)theIdentifier {
-    NSString* str = [NSString stringWithFormat:@"setIdentifier id: %@", theIdentifier];
-    [SFSDKAuthHelper append:str];
     @synchronized(self) {
         if (![theIdentifier isEqualToString:_identifier]) {
             _identifier = [theIdentifier copy];
@@ -271,26 +268,18 @@ NSException * SFOAuthInvalidIdentifierException() {
 }
 
 - (void)revoke {
-    [SFSDKAuthHelper append:@"revoke in SDK"];
     [self revokeAccessToken];
     [self revokeRefreshToken];
 }
 
 - (void)revokeAccessToken {
-    
-    if (!([self.identifier length] > 0)) {
-        [SFSDKAuthHelper append:@"revokeAccessToken"];
-        @throw SFOAuthInvalidIdentifierException();
-    }
+    if (!([self.identifier length] > 0)) @throw SFOAuthInvalidIdentifierException();
     [SFSDKCoreLogger d:[self class] format:@"%@:revokeAccessToken: access token revoked", [self class]];
     self.accessToken = nil;
 }
 
 - (void)revokeRefreshToken {
-    if (!([self.identifier length] > 0)) {
-        [SFSDKAuthHelper append:@"revokeRefreshToken"];
-        @throw SFOAuthInvalidIdentifierException();
-    }
+    if (!([self.identifier length] > 0)) @throw SFOAuthInvalidIdentifierException();
     [SFSDKCoreLogger d:[self class] format:@"%@:revokeRefreshToken: refresh token revoked. Cleared identityUrl, instanceUrl, issuedAt fields", [self class]];
     self.refreshToken = nil;
     self.instanceUrl  = nil;

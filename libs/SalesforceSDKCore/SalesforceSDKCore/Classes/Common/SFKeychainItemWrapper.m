@@ -27,7 +27,6 @@
 #import "SFKeychainItemWrapper+Internal.h"
 #import "NSData+SFAdditions.h"
 #import "NSString+SFAdditions.h"
-// #import "SFSDKAuthHelper.h"
 
 @interface SFKeychainItemWrapper ()
 
@@ -211,8 +210,6 @@ static CFTypeRef sKeychainAccessibleAttribute;
             }
         }
     } else {
-//        NSString* msg = [NSString stringWithFormat:@"updateKeychainAccessibleAttribute: cannot read the keychain: %d", (int)status];
-//        [SFSDKAuthHelper append:msg];
         [SFSDKCoreLogger e:[self class] format:@"cannot read the keychain: %ld", status];
     }
     [genericPasswordQuery release];
