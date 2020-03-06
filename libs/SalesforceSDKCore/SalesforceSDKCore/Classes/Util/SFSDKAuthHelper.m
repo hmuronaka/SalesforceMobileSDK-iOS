@@ -48,7 +48,7 @@ static LogAppender _logAppender;
 }
 
 + (void)loginIfRequired:(void (^)(void))completionBlock {
-    [SFSDKAuthHelper append:@"loginIfRequired in SDK"];
+//     [SFSDKAuthHelper append:@"loginIfRequired in SDK"];
     if (![SFUserAccountManager sharedInstance].currentUser && [SalesforceSDKManager sharedManager].appConfig.shouldAuthenticate) {
         SFUserAccountManagerSuccessCallbackBlock successBlock = ^(SFOAuthInfo *authInfo,SFUserAccount *userAccount) {
             if (completionBlock) {

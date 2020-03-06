@@ -27,7 +27,7 @@
 #import "SFKeyStoreManager+Internal.h"
 #import "SFSDKCryptoUtils.h"
 #import "SFSecureEncryptionKey.h"
-#import "SFSDKAuthHelper.h"
+// #import "SFSDKAuthHelper.h"
 
 // Keychain and NSCoding constants
 static NSString * const kKeyStoreKeychainIdentifier = @"com.salesforce.keystore.keystoreKeychainId";
@@ -69,10 +69,10 @@ static NSString * const kKeyStoreDecryptionFailedMessage = @"Could not decrypt k
         NSString *typedKeyLabel = [self keyLabelForBaseLabel:keyLabel];
         key = (self.generatedKeyStore.keyStoreDictionary)[typedKeyLabel];
         
-        if( !key && !create ) {
-            [SFSDKAuthHelper append:[NSString stringWithFormat:@"retrieveKeyWithLabel failed. key: %@", keyLabel]];
-            return nil;
-        }
+//        if( !key && !create ) {
+//            [SFSDKAuthHelper append:[NSString stringWithFormat:@"retrieveKeyWithLabel failed. key: %@", keyLabel]];
+//            return nil;
+//        }
 
         if (!key && create) {
             key = [SFKeyStoreKey createKey];
