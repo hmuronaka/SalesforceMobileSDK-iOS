@@ -64,8 +64,8 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
     return success;
 }
 
-- (NSDictionary<SFUserAccountIdentity *,SFUserAccount *> *)fetchAllAccounts:(NSError **)error {
-   
+- (NSDictionary<SFUserAccountIdentity *,SFUserAccount *> *)fetchAllAccountsAndRemoveFileIfFailed:(BOOL)isRemoveFile error:(NSError **)error {
+
     NSMutableDictionary<SFUserAccountIdentity *,SFUserAccount *> *userAccountMap = [NSMutableDictionary new];
     
     // Get the root directory, usually ~/Library/<appBundleId>/
@@ -118,8 +118,10 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                         if (userAccount) {
                             userAccountMap[userAccount.accountIdentity] = userAccount;
                         } else {
-                            // Error logging will already have occurred.  Make sure account file data is removed.
-                            [fm removeItemAtPath:userAccountPath error:nil];
+                            if( isRemoveFile ) {
+                                // Error logging will already have occurred.  Make sure account file data is removed.
+                                [fm removeItemAtPath:userAccountPath error:nil];
+                            }
                         }
                     } else {
                         [SFSDKCoreLogger d:[self class] format:@"There is no user account file in this user directory: %@", orgPath];
@@ -129,6 +131,10 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
         }
     }
     return userAccountMap;
+}
+
+- (NSDictionary<SFUserAccountIdentity *,SFUserAccount *> *)fetchAllAccounts:(NSError **)error {
+    return [self fetchAllAccountsAndRemoveFileIfFailed:NO error:error];
 }
 
 - (BOOL)deleteAccountForUser:(SFUserAccount *)user error:(NSError **)error {

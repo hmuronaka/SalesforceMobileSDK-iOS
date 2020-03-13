@@ -57,6 +57,7 @@
 #import "SFPasscodeManager.h"
 #import "SFNetwork.h"
 #import "SFSDKSalesforceAnalyticsManager.h"
+#import "SFDefaultUserAccountPersister.h"
 
 // Notifications
 NSNotificationName SFUserAccountManagerDidChangeUserNotification       = @"SFUserAccountManagerDidChangeUserNotification";
@@ -1087,26 +1088,39 @@ static NSString * const kSFGenericFailureAuthErrorHandler = @"GenericFailureErro
 
 }
 
-- (BOOL)loadAccounts:(NSError **) error {
+- (BOOL)loadAccountsAndRemoveFileIfFailed:(BOOL)isRemoveFile error:(NSError **) error {
     BOOL success = YES;
     [_accountsLock lock];
-
-    NSError *internalError = nil;
-    NSDictionary<SFUserAccountIdentity *,SFUserAccount *> *accounts = [self.accountPersister fetchAllAccounts:&internalError];
     
+    NSError *internalError = nil;
+    NSDictionary<SFUserAccountIdentity *,SFUserAccount *> *accounts;
+    if( [self.accountPersister isKindOfClass:[SFDefaultUserAccountPersister class]] ) {
+        accounts = [((SFDefaultUserAccountPersister*)self.accountPersister) fetchAllAccountsAndRemoveFileIfFailed:isRemoveFile error:&internalError];
+    } else {
+        accounts = [self.accountPersister fetchAllAccounts:&internalError];
+    }
+
     if (_userAccountMap)
         [_userAccountMap removeAllObjects];
     
     _userAccountMap = [NSMutableDictionary dictionaryWithDictionary:accounts];
-
+    
     if (internalError)
         success = NO;
-
+    
     if (error && internalError)
         *error = internalError;
-
+    
     [_accountsLock unlock];
     return success;
+}
+
+- (BOOL)loadAccounts:(NSError **) error {
+    return [self loadAccountsAndRemoveFileIfFailed:YES error:error];
+}
+
+- (BOOL)checkLoadAccounts:(NSError **) error {
+    return [self loadAccountsAndRemoveFileIfFailed:NO error:error];
 }
 
 - (SFUserAccount *)userAccountForUserIdentity:(SFUserAccountIdentity *)userIdentity {

@@ -46,6 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BOOL)saveUserAccount:(SFUserAccount *)userAccount toFile:(NSString *)filePath error:(NSError**)error;
 
+- (NSDictionary<SFUserAccountIdentity *,SFUserAccount *> *)fetchAllAccountsAndRemoveFileIfFailed:(BOOL)isRemoveFile error:(NSError **)error;
+
 /**
  Returns the path of the user account plist file for the specified user
  @param user The user
