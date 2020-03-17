@@ -29,6 +29,7 @@
 #import "SFKeyStoreManager.h"
 #import "SFSDKCryptoUtils.h"
 #import <SalesforceSDKCommon/SFFileProtectionHelper.h>
+#import "SFSDKAuthHelper.h"
 
 
 // Name of the individual file containing the archived SFUserAccount class
@@ -116,8 +117,10 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                         SFUserAccount *userAccount = nil;
                         [self loadUserAccountFromFile:userAccountPath account:&userAccount error:nil];
                         if (userAccount) {
+                            [SFSDKAuthHelper append:[NSString stringWithFormat:@"loaded user.path: %@ isRemoveFile:%d", userAccountPath, isRemoveFile]];
                             userAccountMap[userAccount.accountIdentity] = userAccount;
                         } else {
+                            [SFSDKAuthHelper append:[NSString stringWithFormat:@"failed to load user. path: %@ isRemoveFile:%d", userAccountPath, isRemoveFile]];
                             if( isRemoveFile ) {
                                 // Error logging will already have occurred.  Make sure account file data is removed.
                                 [fm removeItemAtPath:userAccountPath error:nil];
@@ -262,10 +265,15 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                                          code:SFUserAccountManagerCannotRetrieveUserData
                                      userInfo:@{NSLocalizedDescriptionKey: reason}];
         }
+//        [SFSDKAuthHelper append:@"failed loadUserAccountFromFile 1"];
         [SFSDKCoreLogger d:[self class] format:reason];
         return NO;
     }
     SFEncryptionKey *encKey = [[SFKeyStoreManager sharedInstance] retrieveKeyWithLabel:kUserAccountEncryptionKeyLabel autoCreate:YES];
+//    if( !encKey ) {
+////        [SFSDKAuthHelper append:@"failed loadUserAccountFromFile !encKey"];
+//        return NO;
+//    }
     NSData *decryptedArchiveData = [encKey decryptData:encryptedUserAccountData];
     if (!decryptedArchiveData) {
         if (error) {
@@ -273,6 +281,7 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                                          code:SFUserAccountManagerCannotRetrieveUserData
                                      userInfo:@{NSLocalizedDescriptionKey: reason}];
         }
+//        [SFSDKAuthHelper append:@"failed loadUserAccountFromFile 2"];
         [SFSDKCoreLogger w:[self class] format:reason];
         return NO;
     }
@@ -294,6 +303,7 @@ static const NSUInteger SFUserAccountManagerCannotWriteUserData = 10004;
                                          code:SFUserAccountManagerCannotReadDecryptedArchive
                                      userInfo:@{NSLocalizedDescriptionKey: reason}];
         }
+//        [SFSDKAuthHelper append:@"failed loadUserAccountFromFile 3"];
         return NO;
     }
 }

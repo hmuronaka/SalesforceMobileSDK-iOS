@@ -58,6 +58,7 @@
 #import "SFNetwork.h"
 #import "SFSDKSalesforceAnalyticsManager.h"
 #import "SFDefaultUserAccountPersister.h"
+#import "SFSDKAuthHelper.h"
 
 // Notifications
 NSNotificationName SFUserAccountManagerDidChangeUserNotification       = @"SFUserAccountManagerDidChangeUserNotification";
@@ -1095,8 +1096,11 @@ static NSString * const kSFGenericFailureAuthErrorHandler = @"GenericFailureErro
     NSError *internalError = nil;
     NSDictionary<SFUserAccountIdentity *,SFUserAccount *> *accounts;
     if( [self.accountPersister isKindOfClass:[SFDefaultUserAccountPersister class]] ) {
+        [SFSDKAuthHelper append:@"loadAccountsAndRemoveFileIfFailed use default persister"];
+
         accounts = [((SFDefaultUserAccountPersister*)self.accountPersister) fetchAllAccountsAndRemoveFileIfFailed:isRemoveFile error:&internalError];
     } else {
+        [SFSDKAuthHelper append:@"loadAccountsAndRemoveFileIfFailed use other persister"];
         accounts = [self.accountPersister fetchAllAccounts:&internalError];
     }
 

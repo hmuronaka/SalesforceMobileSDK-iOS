@@ -27,8 +27,14 @@
  */
 #import <Foundation/Foundation.h>
 
+typedef void (^LogAppender)(NSString* _Nonnull);
+
 NS_SWIFT_NAME(AuthHelper)
 @interface SFSDKAuthHelper : NSObject
+
++ (void)setLogAppender:(LogAppender)logAppender;
++ (void)append:(NSString*)message;
+
 
 /**
  Initiate a login flow if the user is not already logged in to Salesforce and if the app config's `shouldAuthenticate` flag is set to false.
