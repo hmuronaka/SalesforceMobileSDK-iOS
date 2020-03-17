@@ -387,6 +387,7 @@ NS_SWIFT_NAME(UserAccountManager)
  */
 - (BOOL)loadAccounts:(NSError**)error NS_SWIFT_NAME(loadAllUserAccounts());
 
+- (BOOL)checkLoadAccounts:(NSError**)error NS_SWIFT_NAME(checkLoadAllUserAccounts());
 /** An NSArray of all the SFUserAccount instances for the app.
  */
 - (nullable NSArray <SFUserAccount *> *) allUserAccounts NS_SWIFT_NAME(userAccounts());
